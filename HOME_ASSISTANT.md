@@ -17,9 +17,10 @@ This Home Assistant integration allows you to track your water usage from utilit
 1. **Install HACS** if you haven't already: [HACS Installation Guide](https://hacs.xyz/docs/setup/download)
 
 2. **Add Custom Repository**:
+
    - Go to HACS → Integrations
    - Click the three dots menu → Custom repositories
-   - Add repository URL: `https://github.com/yourusername/myMeterData`
+   - Add repository URL: `https://github.com/jbelluch/myMeterData`
    - Category: Integration
    - Click "Add"
 
@@ -31,9 +32,10 @@ This Home Assistant integration allows you to track your water usage from utilit
 ### Method 2: Manual Installation
 
 1. **Download Integration**:
+
    ```bash
    cd /config/custom_components
-   git clone https://github.com/yourusername/myMeterData.git
+   git clone https://github.com/jbelluch/myMeterData.git
    cp -r myMeterData/custom_components/utility_water ./
    ```
 
@@ -44,12 +46,14 @@ This Home Assistant integration allows you to track your water usage from utilit
 ### Setup Integration
 
 1. **Add Integration**:
+
    - Go to Settings → Devices & Services
    - Click "Add Integration"
    - Search for "Utility Water Meter"
    - Click to add
 
 2. **Enter Credentials**:
+
    - **Username**: Your utility billing system email
    - **Password**: Your utility billing system password
    - **Base URL**: (Usually auto-filled, change if needed)
@@ -63,16 +67,17 @@ This Home Assistant integration allows you to track your water usage from utilit
 
 The integration creates these sensors:
 
-| Sensor | Description | Unit | Device Class |
-|--------|-------------|------|--------------|
-| `sensor.utility_water_meter_water_usage` | Daily water consumption | gallons | water |
-| `sensor.utility_water_meter_temperature` | Current temperature | °F | temperature |
-| `sensor.utility_water_meter_precipitation` | Precipitation | inches | precipitation |
-| `sensor.utility_water_meter_humidity` | Humidity | % | humidity |
+| Sensor                                     | Description             | Unit    | Device Class  |
+| ------------------------------------------ | ----------------------- | ------- | ------------- |
+| `sensor.utility_water_meter_water_usage`   | Daily water consumption | gallons | water         |
+| `sensor.utility_water_meter_temperature`   | Current temperature     | °F      | temperature   |
+| `sensor.utility_water_meter_precipitation` | Precipitation           | inches  | precipitation |
+| `sensor.utility_water_meter_humidity`      | Humidity                | %       | humidity      |
 
 ### Energy Dashboard Setup
 
 1. **Add Water Source**:
+
    - Go to Settings → Dashboards → Energy
    - Click "Add Water Source"
    - Select `sensor.utility_water_meter_water_usage`
@@ -92,7 +97,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.utility_water_meter_water_usage
-        above: 100  # Alert if daily usage exceeds 100 gallons
+        above: 100 # Alert if daily usage exceeds 100 gallons
     action:
       - service: notify.mobile_app_your_phone
         data:
@@ -129,16 +134,19 @@ title: Water Usage
 ### Common Issues
 
 **Integration Not Loading**:
+
 - Check Home Assistant logs: Settings → System → Logs
 - Ensure all files are in `/config/custom_components/utility_water/`
 - Restart Home Assistant after installation
 
 **Login Failures**:
+
 - Verify credentials in the utility billing website
 - Check if 2FA is enabled (not currently supported)
 - Review integration logs for specific error messages
 
 **No Data Appearing**:
+
 - Check update interval (may take time for first data)
 - Verify utility website is accessible
 - Look for rate limiting or blocking
@@ -165,7 +173,8 @@ service: utility_water.refresh_data
 ## Supported Systems
 
 Currently supports:
-- Your city utility billing system (configurable base URL)
+
+- Lawrence, KS utility billing system (`utilitybilling.lawrenceks.gov`)
 
 The integration can be adapted for other utility systems with similar authentication flows.
 
@@ -181,9 +190,9 @@ See the main [README.md](README.md) for development setup and contribution guide
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/myMeterData/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/myMeterData/discussions)
-- **Home Assistant Community**: Tag `@yourusername` in Home Assistant forums
+- **Issues**: [GitHub Issues](https://github.com/jbelluch/myMeterData/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/jbelluch/myMeterData/discussions)
+- **Home Assistant Community**: Tag `@jbelluch` in Home Assistant forums
 
 ## Changelog
 

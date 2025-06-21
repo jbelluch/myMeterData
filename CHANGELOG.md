@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-06-20
 
 ### Added
-- Initial release of City Water Utility Data Scraper
-- Automated login to utilitybilling.lawrenceks.gov
+
+- Initial release of Utility billing Data Scraper
+- Automated login to utility billing website
 - Hourly water usage data extraction with weather correlation
 - CSV export functionality
 - Proper logging system with configurable levels
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Debug utilities for troubleshooting authentication issues
 
 ### Features
+
 - **Data Extraction**: Retrieve hourly water usage data from embedded JavaScript
 - **Weather Data**: Includes temperature, precipitation, and humidity data
 - **CSV Export**: Save structured data to timestamped CSV files
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Structure**: Professional Python package layout with src/ structure
 
 ### Technical Details
+
 - Python 3.7+ compatibility
 - Uses requests, BeautifulSoup4, and python-dotenv
 - Follows PEP 8 coding standards
@@ -37,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation and examples
 
 ### Project Structure
+
 ```
 myMeterData/
 ├── README.md              # Project documentation
@@ -61,6 +65,7 @@ myMeterData/
 ```
 
 ### Usage Examples
+
 ```bash
 # Using the standalone script
 python scripts/scrape_usage.py
@@ -73,7 +78,9 @@ scrape-usage --help
 ```
 
 ### Data Format
+
 The scraper outputs CSV files with the following structure:
+
 - `datetime`: Hour-by-hour time periods
 - `usage_gallons`: Water consumption in gallons
 - `temperature_f`: Temperature in Fahrenheit

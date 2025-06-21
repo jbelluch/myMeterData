@@ -7,6 +7,7 @@ A comprehensive Python tool and Home Assistant integration to extract and analyz
 **NEW**: This project now includes a full Home Assistant integration! Track your water usage directly in the Energy dashboard.
 
 ### Quick Start for Home Assistant
+
 - Install via HACS (Home Assistant Community Store)
 - Configure with your utility credentials
 - Water usage appears in Energy dashboard automatically
@@ -37,17 +38,20 @@ For Home Assistant users, see the dedicated [Home Assistant Setup Guide](HOME_AS
 #### Setup
 
 1. **Clone the repository:**
+
    ```bash
-   git clone https://github.com/yourusername/myMeterData.git
+   git clone https://github.com/jbelluch/myMeterData.git
    cd myMeterData
    ```
 
 2. **Install dependencies:**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Create environment file:**
+
    ```bash
    cp .env.example .env
    ```
@@ -70,6 +74,7 @@ python utility_scraper.py
 ```
 
 The script will:
+
 1. Login to your utility account
 2. Retrieve dashboard data
 3. Extract usage information
@@ -79,13 +84,13 @@ The script will:
 
 The CSV file contains the following columns:
 
-| Column | Description |
-|--------|-------------|
-| `datetime` | Hour time period (e.g., "Thu, Jun 19, 2025 4:00 AM - 5:00 AM") |
-| `usage_gallons` | Water consumption in gallons for that hour |
-| `temperature_f` | Average temperature in Fahrenheit |
-| `precipitation_in` | Precipitation in inches |
-| `humidity_percent` | Relative humidity percentage |
+| Column             | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| `datetime`         | Hour time period (e.g., "Thu, Jun 19, 2025 4:00 AM - 5:00 AM") |
+| `usage_gallons`    | Water consumption in gallons for that hour                     |
+| `temperature_f`    | Average temperature in Fahrenheit                              |
+| `precipitation_in` | Precipitation in inches                                        |
+| `humidity_percent` | Relative humidity percentage                                   |
 
 ### Example Output
 
@@ -103,7 +108,7 @@ datetime,usage_gallons,temperature_f,precipitation_in,humidity_percent
 Configure the scraper by editing `.env`:
 
 ```bash
-# City Utility Billing Credentials
+# Lawrence KS Utility Billing Credentials
 UTILITY_USERNAME=your_email@example.com
 UTILITY_PASSWORD=your_password
 
@@ -187,22 +192,26 @@ Water usage data is embedded in the dashboard as JavaScript `tooltipJSON`. The s
 ### Common Issues
 
 **Login Failures:**
+
 - Verify credentials in `.env` file
 - Check if account requires 2FA (not currently supported)
 - Run `debug_login.py` for detailed authentication analysis
 
 **No Data Retrieved:**
+
 - Ensure account has usage history
 - Check internet connection
 - Verify utility website is accessible
 
 **Permission Errors:**
+
 - Ensure `./data/` directory is writable
 - Check file permissions
 
 ### Debug Mode
 
 For detailed login analysis, run:
+
 ```bash
 python debug_login.py
 ```
@@ -228,7 +237,7 @@ This tool is intended for accessing your own utility data. Please:
 
 ## Disclaimer
 
-This project is not affiliated with any specific city or utility billing system. Use at your own risk and ensure compliance with your utility company's terms of service.
+This project is not affiliated with the City of Lawrence, Kansas or their utility billing system. Use at your own risk and ensure compliance with the utility company's terms of service.
 
 ## License
 
@@ -237,6 +246,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For questions or issues:
-1. Check existing [GitHub Issues](https://github.com/yourusername/myMeterData/issues)
+
+1. Check existing [GitHub Issues](https://github.com/jbelluch/myMeterData/issues)
 2. Create a new issue with detailed information
 3. Include debug output when reporting problems

@@ -1,4 +1,5 @@
 """Constants for the Utility Water Meter integration."""
+
 from datetime import timedelta
 
 DOMAIN = "utility_water"
@@ -9,8 +10,8 @@ CONF_PASSWORD = "password"
 CONF_BASE_URL = "base_url"
 CONF_UPDATE_INTERVAL = "update_interval"
 
-# Defaults  
-DEFAULT_BASE_URL = "https://utilitybilling.lawrenceks.gov"
+# Defaults
+DEFAULT_BASE_URL = "https://YOURUTILITYBILLINGnceks.gov"
 DEFAULT_UPDATE_INTERVAL = timedelta(hours=1)
 DEFAULT_TIMEOUT = 30
 DEFAULT_REQUEST_DELAY = 1.0
