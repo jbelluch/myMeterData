@@ -1,0 +1,5 @@
+refresh_data:
+  name: Refresh Water Usage Data
+  description: Manually refresh water usage data from the utility meter
+  target:
+    integration: utility_water

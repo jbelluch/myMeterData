@@ -1,0 +1,10 @@
+{
+  "name": "Utility Water Meter",
+  "content_in_root": false,
+  "filename": "utility_water",
+  "country": ["US"],
+  "domains": ["sensor"],
+  "iot_class": "Cloud Polling",
+  "render_readme": true,
+  "homeassistant": "2023.1.0"
+}

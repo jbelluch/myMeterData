@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Setup Utility Water Meter",
+        "description": "Enter your utility billing system credentials to connect your water meter data to Home Assistant.",
+        "data": {
+          "username": "Username (Email)",
+          "password": "Password",
+          "base_url": "Base URL",
+          "update_interval": "Update Interval (hours)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the utility billing system. Please check your network connection and try again.",
+      "invalid_auth": "Invalid username or password. Please check your credentials and try again.",
+      "unknown": "Unexpected error occurred. Please try again."
+    },
+    "abort": {
+      "already_configured": "This utility account is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Utility Water Meter",
+        "data": {
+          "update_interval": "Update Interval (hours)"
+        }
+      }
+    }
+  }
+}
