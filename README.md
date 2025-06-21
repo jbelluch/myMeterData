@@ -113,7 +113,7 @@ UTILITY_USERNAME=your_email@example.com
 UTILITY_PASSWORD=your_password
 
 # Base URL (shouldn't need to change)
-BASE_URL=https://utilitybilling.lawrenceks.gov
+BASE_URL=https://UTILITYBILLINGWEBSITE.gov
 
 # Export settings
 DEFAULT_EXPORT_FORMAT=csv
@@ -161,10 +161,6 @@ myMeterData/
 ├── scripts/                  # Utility scripts
 │   ├── scrape_usage.py      # Standalone CLI script
 │   └── debug_login.py       # Authentication debugging
-├── docs/                    # Documentation
-│   └── ENDPOINTS.md         # API endpoint documentation
-├── data/                    # Output directory for CSV files
-└── reference/               # Reference materials
 ```
 
 ## Technical Details
@@ -237,7 +233,7 @@ This tool is intended for accessing your own utility data. Please:
 
 ## Disclaimer
 
-This project is not affiliated with the City of Lawrence, Kansas or their utility billing system. Use at your own risk and ensure compliance with the utility company's terms of service.
+This project is not affiliated with Accelerated Innovations' MyMeter or vxconnect. Use at your own risk and ensure compliance with the utility company's terms of service.
 
 ## License
 

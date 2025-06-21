@@ -1,12 +1,12 @@
 {
   "domain": "utility_water",
   "name": "Utility Water Meter",
-  "codeowners": ["@yourusername"],
+  "codeowners": ["@jbelluch"],
   "config_flow": true,
-  "documentation": "https://github.com/yourusername/myMeterData",
+  "documentation": "https://github.com/jbelluch/myMeterData",
   "integration_type": "hub",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/yourusername/myMeterData/issues",
+  "issue_tracker": "https://github.com/jbelluch/myMeterData/issues",
   "requirements": [
     "requests>=2.25.0",
     "beautifulsoup4>=4.9.0",
