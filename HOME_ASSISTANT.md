@@ -7,7 +7,7 @@ This Home Assistant integration allows you to track your water usage from utilit
 - **Water Usage Tracking**: Monitor daily and hourly water consumption
 - **Energy Dashboard Integration**: Water usage appears in Home Assistant's Energy page
 - **Weather Correlation**: Track temperature, precipitation, and humidity alongside usage
-- **Automatic Updates**: Configurable update intervals (default: 1 hour)
+- **Daily Statistics Import**: Imports historical hourly data once per day (default: 24 hours)
 - **HACS Compatible**: Easy installation and updates through HACS
 
 ## Installation
@@ -57,7 +57,7 @@ This Home Assistant integration allows you to track your water usage from utilit
    - **Username**: Your utility billing system email
    - **Password**: Your utility billing system password
    - **Base URL**: (Usually auto-filled, change if needed)
-   - **Update Interval**: How often to fetch data (hours)
+   - **Update Interval**: How often to fetch data (hours, recommended: 24)
 
 3. **Complete Setup**:
    - Click "Submit"
@@ -84,8 +84,9 @@ The integration creates these sensors:
    - Click "Save"
 
 2. **Configure**:
-   - The sensor uses `state_class: total_increasing` for proper Energy dashboard integration
-   - Water usage will now appear in your Energy dashboard
+   - The integration imports hourly usage data as statistics for the Energy dashboard
+   - Historical data is imported once per day when utility data updates
+   - Water usage will now appear in your Energy dashboard with hourly granularity
 
 ## Usage Examples
 

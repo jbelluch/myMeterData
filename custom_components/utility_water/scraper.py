@@ -189,7 +189,7 @@ class UtilityDataScraper:
         return usage_records
     
     def get_latest_data(self, username: str, password: str) -> Optional[Dict[str, Any]]:
-        """Get the latest usage data asynchronously."""
+        """Get the latest usage data for Home Assistant."""
         try:
             # Login
             if not self.login(username, password):
@@ -208,16 +208,29 @@ class UtilityDataScraper:
                 _LOGGER.warning("No usage data found")
                 return None
             
-            # Return the most recent record
-            latest_record = max(usage_records, key=lambda x: x['datetime'])
+            # Sort records by datetime to ensure proper ordering
+            sorted_records = sorted(usage_records, key=lambda x: x['datetime'])
             
-            # Calculate total usage for the day
-            total_usage = sum(record['usage_gallons'] for record in usage_records)
+            # Get the most recent record
+            latest_record = sorted_records[-1] if sorted_records else None
+            
+            # For Home Assistant Energy dashboard, we need a cumulative total
+            # This should be the sum of ALL water usage since we started tracking
+            total_gallons = sum(record['usage_gallons'] for record in sorted_records)
+            
+            # Get latest hourly reading for reference
+            latest_usage = latest_record['usage_gallons'] if latest_record else 0
+            
+            # For debugging - log the data we're sending
+            _LOGGER.debug(f"Sending to HA: total={total_gallons}, latest_hourly={latest_usage}, records={len(sorted_records)}")
             
             return {
                 'latest_record': latest_record,
-                'total_daily_usage': total_usage,
-                'record_count': len(usage_records)
+                'meter_reading': total_gallons,  # This becomes the sensor state - cumulative total
+                'latest_hourly': latest_usage,
+                'record_count': len(usage_records),
+                'all_records': sorted_records,  # All records for statistics import
+                'debug_records': [f"{r['datetime']}: {r['usage_gallons']} gal" for r in sorted_records[-5:]]  # Last 5 for debugging
             }
             
         except Exception as e:

@@ -27,7 +27,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
         vol.Optional(CONF_BASE_URL, default=DEFAULT_BASE_URL): str,
-        vol.Optional(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL.total_seconds() / 3600): vol.Coerce(float),
+        vol.Optional(CONF_UPDATE_INTERVAL, default=24): vol.Coerce(float),
     }
 )
 
