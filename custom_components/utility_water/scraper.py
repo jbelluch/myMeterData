@@ -208,8 +208,16 @@ class UtilityDataScraper:
                 _LOGGER.warning("No usage data found")
                 return None
             
-            # Sort records by datetime to ensure proper ordering
-            sorted_records = sorted(usage_records, key=lambda x: x['datetime'])
+            # Sort records by datetime to ensure proper chronological ordering
+            def parse_datetime(datetime_str):
+                """Parse utility datetime string to datetime object for sorting."""
+                try:
+                    start_time_str = datetime_str.split(" - ")[0]
+                    return time.strptime(start_time_str, "%a, %b %d, %Y %I:%M %p")
+                except ValueError:
+                    return time.struct_time((1970, 1, 1, 0, 0, 0, 0, 1, 0))  # Epoch for invalid dates
+            
+            sorted_records = sorted(usage_records, key=lambda x: parse_datetime(x['datetime']))
             
             # Get the most recent record
             latest_record = sorted_records[-1] if sorted_records else None
