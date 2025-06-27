@@ -8,6 +8,7 @@ import json
 import logging
 import re
 import time
+import random
 from typing import Dict, Optional, Any, List
 from bs4 import BeautifulSoup
 
@@ -22,10 +23,13 @@ class UtilityDataScraper:
         self.base_url = "https://utilitybilling.lawrenceks.gov"
         self.timeout = 30
         self.request_delay = 1.0
-        self.session = requests.Session()
+    
+    def _create_fresh_session(self):
+        """Create a fresh session with proper headers."""
+        session = requests.Session()
         
         # Set common headers that match browser behavior
-        self.session.headers.update({
+        session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'Accept-Language': 'en-US,en;q=0.9',
@@ -37,15 +41,21 @@ class UtilityDataScraper:
             'Sec-Fetch-Site': 'same-origin',
             'Sec-Fetch-User': '?1'
         })
+        
+        return session
     
-    def login(self, username: str, password: str) -> bool:
-        """Login to the utility billing system."""
+    def login(self, session: requests.Session, username: str, password: str) -> bool:
+        """Login to the utility billing system using provided session."""
         try:
             _LOGGER.debug("Attempting to login to utility system")
             
             # Get homepage which contains the login form
-            time.sleep(self.request_delay)
-            homepage = self.session.get(self.base_url, timeout=self.timeout)
+            # Add some randomization to avoid detection
+            delay = self.request_delay + random.uniform(0, 2)
+            time.sleep(delay)
+            homepage = session.get(self.base_url, timeout=self.timeout)
+            
+            _LOGGER.debug(f"Homepage response: {homepage.status_code}, URL: {homepage.url}")
             
             if homepage.status_code != 200:
                 _LOGGER.error(f"Failed to get homepage: {homepage.status_code}")
@@ -56,15 +66,29 @@ class UtilityDataScraper:
             
             # Find the login form
             login_form = None
-            for form in soup.find_all('form'):
+            all_forms = soup.find_all('form')
+            _LOGGER.debug(f"Found {len(all_forms)} forms on homepage")
+            
+            for i, form in enumerate(all_forms):
                 action = form.get('action', '')
+                _LOGGER.debug(f"Form {i+1}: action='{action}'")
                 if '/Home/Login' in action:
                     login_form = form
+                    _LOGGER.debug(f"Found login form with action: {action}")
                     break
             
             if not login_form:
                 _LOGGER.error("Could not find login form")
-                return False
+                _LOGGER.debug("Available form actions: " + ", ".join([f.get('action', 'No action') for f in all_forms]))
+                
+                # Try alternative approaches
+                # Sometimes the form might have a different action or be dynamically loaded
+                password_forms = [f for f in all_forms if any(inp.get('type') == 'password' for inp in f.find_all('input'))]
+                if password_forms:
+                    _LOGGER.debug(f"Found {len(password_forms)} forms with password fields, trying first one")
+                    login_form = password_forms[0]
+                else:
+                    return False
             
             # Extract form data
             form_data = {}
@@ -84,14 +108,14 @@ class UtilityDataScraper:
                         form_data[name] = value
             
             # Update headers for form submission
-            self.session.headers.update({
+            session.headers.update({
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Referer': homepage.url
             })
             
             # Submit login form
             time.sleep(self.request_delay)
-            login_response = self.session.post(
+            login_response = session.post(
                 f"{self.base_url}/Home/Login", 
                 data=form_data, 
                 timeout=self.timeout,
@@ -106,7 +130,7 @@ class UtilityDataScraper:
                         redirect_url = self.base_url + redirect_url
                     
                     time.sleep(self.request_delay)
-                    redirect_response = self.session.get(redirect_url, timeout=self.timeout)
+                    redirect_response = session.get(redirect_url, timeout=self.timeout)
                     
                     if redirect_response.status_code == 200:
                         _LOGGER.debug("Login successful!")
@@ -125,11 +149,11 @@ class UtilityDataScraper:
             _LOGGER.error(f"Login error: {e}")
             return False
     
-    def get_dashboard_data(self) -> Optional[Dict[str, Any]]:
+    def get_dashboard_data(self, session: requests.Session) -> Optional[Dict[str, Any]]:
         """Fetch the dashboard table data."""
         try:
             time.sleep(self.request_delay)
-            response = self.session.get(f"{self.base_url}/Dashboard/Table", timeout=self.timeout)
+            response = session.get(f"{self.base_url}/Dashboard/Table", timeout=self.timeout)
             
             if response.status_code == 200:
                 try:
@@ -189,15 +213,20 @@ class UtilityDataScraper:
         return usage_records
     
     def get_latest_data(self, username: str, password: str) -> Optional[Dict[str, Any]]:
-        """Get the latest usage data for Home Assistant."""
+        """Get the latest usage data for Home Assistant with fresh session."""
         try:
-            # Login
-            if not self.login(username, password):
-                _LOGGER.error("Failed to login")
+            _LOGGER.debug("Starting fresh data fetch with new session")
+            
+            # Create a completely fresh session (mimics integration reload)
+            session = self._create_fresh_session()
+            
+            # Login with fresh session
+            if not self.login(session, username, password):
+                _LOGGER.error("Failed to login with fresh session")
                 return None
             
             # Get dashboard data
-            dashboard_data = self.get_dashboard_data()
+            dashboard_data = self.get_dashboard_data(session)
             if not dashboard_data:
                 _LOGGER.error("Failed to retrieve dashboard data")
                 return None
@@ -223,24 +252,26 @@ class UtilityDataScraper:
             latest_record = sorted_records[-1] if sorted_records else None
             
             # For Home Assistant Energy dashboard, we need a cumulative total
-            # This should be the sum of ALL water usage since we started tracking
             total_gallons = sum(record['usage_gallons'] for record in sorted_records)
             
             # Get latest hourly reading for reference
             latest_usage = latest_record['usage_gallons'] if latest_record else 0
             
-            # For debugging - log the data we're sending
-            _LOGGER.debug(f"Sending to HA: total={total_gallons}, latest_hourly={latest_usage}, records={len(sorted_records)}")
+            _LOGGER.info(f"Fresh session data fetch successful: {len(sorted_records)} records, {total_gallons} total gallons")
             
             return {
                 'latest_record': latest_record,
-                'meter_reading': total_gallons,  # This becomes the sensor state - cumulative total
+                'meter_reading': total_gallons,
                 'latest_hourly': latest_usage,
                 'record_count': len(usage_records),
-                'all_records': sorted_records,  # All records for statistics import
-                'debug_records': [f"{r['datetime']}: {r['usage_gallons']} gal" for r in sorted_records[-5:]]  # Last 5 for debugging
+                'all_records': sorted_records,
+                'debug_records': [f"{r['datetime']}: {r['usage_gallons']} gal" for r in sorted_records[-5:]]
             }
             
         except Exception as e:
-            _LOGGER.error(f"Error getting latest data: {e}")
+            _LOGGER.error(f"Error in fresh session data fetch: {e}")
             return None
+        finally:
+            # Ensure session is cleaned up
+            if 'session' in locals():
+                session.close()

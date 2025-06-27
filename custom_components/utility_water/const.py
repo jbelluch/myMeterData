@@ -12,7 +12,7 @@ CONF_UPDATE_INTERVAL = "update_interval"
 
 # Defaults
 DEFAULT_BASE_URL = "https://YOURUTILITYBILLING.gov"
-DEFAULT_UPDATE_INTERVAL = timedelta(hours=24)  # Daily updates since data is batch-updated
+DEFAULT_UPDATE_INTERVAL = timedelta(hours=25)  # Daily updates with some offset to avoid detection
 DEFAULT_TIMEOUT = 30
 DEFAULT_REQUEST_DELAY = 1.0
 

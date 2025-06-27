@@ -68,8 +68,8 @@ class UtilityWaterDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize."""
         self.username = username
         self.password = password
-        self.scraper = UtilityDataScraper()
         self._hass = hass
+        # Don't create scraper instance here - create fresh for each update
         
         super().__init__(
             hass,
@@ -81,8 +81,12 @@ class UtilityWaterDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> dict[str, Any]:
         """Update data via library and import statistics."""
         try:
+            # Create fresh scraper instance for each update (mimics integration reload)
+            scraper = UtilityDataScraper()
+            _LOGGER.debug("Created fresh scraper instance for data update")
+            
             data = await self.hass.async_add_executor_job(
-                self.scraper.get_latest_data, self.username, self.password
+                scraper.get_latest_data, self.username, self.password
             )
             if not data:
                 raise UpdateFailed("Failed to fetch data from utility meter")
